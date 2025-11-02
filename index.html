@@ -26,33 +26,38 @@
 
         <!-- SEÇÃO 1: CADASTRO DE TAXAS -->
         <div class="mb-8 border-b pb-8">
-            <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Cadastrar Paridades do Mês (vs EUR)</h2>
-            <p class="text-sm text-gray-600 mb-4">Insira quantas unidades de EUR valem 1 unidade da moeda local.</p>
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Cadastrar Paridades do Mês (a partir do EUR)</h2>
+            <!-- MUDANÇA: O texto de ajuda foi alterado para refletir a nova lógica -->
+            <p class="text-sm text-gray-600 mb-4">Insira quantas unidades da moeda local valem 1 EUR.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Taxas USD -->
                 <div class="bg-gray-50 p-4 rounded-lg border">
-                    <h3 class="font-bold text-lg mb-2">USD ➔ EUR</h3>
+                    <!-- MUDANÇA: Label alterada para EUR -> USD -->
+                    <h3 class="font-bold text-lg mb-2">EUR ➔ USD</h3>
                     <div>
-                        <label for="usd-media" class="block text-sm font-medium text-gray-700">Taxa Média (DRE/FCX)</label>
-                        <input type="number" id="usd-media" step="any" placeholder="Ex: 0.92" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <label for="eur-usd-media" class="block text-sm font-medium text-gray-700">Taxa Média (DRE/FCX)</label>
+                        <!-- MUDANÇA: IDs alterados -->
+                        <input type="number" id="eur-usd-media" step="any" placeholder="Ex: 1.08" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="mt-4">
-                        <label for="usd-fim" class="block text-sm font-medium text-gray-700">Taxa Final (Balanço)</label>
-                        <input type="number" id="usd-fim" step="any" placeholder="Ex: 0.90" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <label for="eur-usd-fim" class="block text-sm font-medium text-gray-700">Taxa Final (Balanço)</label>
+                        <input type="number" id="eur-usd-fim" step="any" placeholder="Ex: 1.10" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
 
                 <!-- Taxas BRL -->
                 <div class="bg-gray-50 p-4 rounded-lg border">
-                    <h3 class="font-bold text-lg mb-2">BRL ➔ EUR</h3>
+                    <!-- MUDANÇA: Label alterada para EUR -> BRL -->
+                    <h3 class="font-bold text-lg mb-2">EUR ➔ BRL</h3>
                     <div>
-                        <label for="brl-media" class="block text-sm font-medium text-gray-700">Taxa Média (DRE/FCX)</label>
-                        <input type="number" id="brl-media" step="any" placeholder="Ex: 0.19" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <label for="eur-brl-media" class="block text-sm font-medium text-gray-700">Taxa Média (DRE/FCX)</label>
+                        <!-- MUDANÇA: IDs alterados -->
+                        <input type="number" id="eur-brl-media" step="any" placeholder="Ex: 6.31" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div class="mt-4">
-                        <label for="brl-fim" class="block text-sm font-medium text-gray-700">Taxa Final (Balanço)</label>
-                        <input type="number" id="brl-fim" step="any" placeholder="Ex: 0.18" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <label for="eur-brl-fim" class="block text-sm font-medium text-gray-700">Taxa Final (Balanço)</label>
+                        <input type="number" id="eur-brl-fim" step="any" placeholder="Ex: 6.25" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
             </div>
@@ -129,21 +134,21 @@
         document.addEventListener('DOMContentLoaded', () => {
 
             // --- INÍCIO: Chaves para o localStorage ---
-            // Definimos "chaves" (nomes) únicas para guardar cada taxa no localStorage
-            // É boa prática usar um prefixo para evitar conflitos com outros sites.
-            const KEY_USD_MEDIA = 'conversor_taxa_usd_media';
-            const KEY_USD_FIM = 'conversor_taxa_usd_fim';
-            const KEY_BRL_MEDIA = 'conversor_taxa_brl_media';
-            const KEY_BRL_FIM = 'conversor_taxa_brl_fim';
+            // MUDANÇA: As chaves foram atualizadas para refletir as novas labels (EUR -> MOEDA)
+            const KEY_EUR_USD_MEDIA = 'conversor_taxa_eur_usd_media';
+            const KEY_EUR_USD_FIM = 'conversor_taxa_eur_usd_fim';
+            const KEY_EUR_BRL_MEDIA = 'conversor_taxa_eur_brl_media';
+            const KEY_EUR_BRL_FIM = 'conversor_taxa_eur_brl_fim';
 
             // Mapeamento dos elementos do HTML para o JavaScript
             const btnConverter = document.getElementById('btn-converter');
             
             // Inputs de Taxas
-            const usdMedia = document.getElementById('usd-media');
-            const usdFim = document.getElementById('usd-fim');
-            const brlMedia = document.getElementById('brl-media');
-            const brlFim = document.getElementById('brl-fim');
+            // MUDANÇA: Os IDs das variáveis foram atualizados
+            const eurUsdMedia = document.getElementById('eur-usd-media');
+            const eurUsdFim = document.getElementById('eur-usd-fim');
+            const eurBrlMedia = document.getElementById('eur-brl-media');
+            const eurBrlFim = document.getElementById('eur-brl-fim');
 
             // Inputs da Conversão
             const moedaOrigem = document.getElementById('moeda-origem');
@@ -161,17 +166,15 @@
 
             // Função para carregar as taxas salvas do localStorage
             function carregarTaxasSalvas() {
-                // localStorage.getItem(CHAVE) busca o valor. Se não existir, retorna null.
-                // Usamos '|| '' ' (ou string vazia) para garantir que o campo fique em branco se nada for encontrado.
-                usdMedia.value = localStorage.getItem(KEY_USD_MEDIA) || '';
-                usdFim.value = localStorage.getItem(KEY_USD_FIM) || '';
-                brlMedia.value = localStorage.getItem(KEY_BRL_MEDIA) || '';
-                brlFim.value = localStorage.getItem(KEY_BRL_FIM) || '';
+                // MUDANÇA: Carrega os valores usando as novas chaves
+                eurUsdMedia.value = localStorage.getItem(KEY_EUR_USD_MEDIA) || '';
+                eurUsdFim.value = localStorage.getItem(KEY_EUR_USD_FIM) || '';
+                eurBrlMedia.value = localStorage.getItem(KEY_EUR_BRL_MEDIA) || '';
+                eurBrlFim.value = localStorage.getItem(KEY_EUR_BRL_FIM) || '';
             }
 
             // Função para salvar uma taxa específica
             function salvarTaxa(chave, valor) {
-                // localStorage.setItem(CHAVE, VALOR) guarda o dado no navegador.
                 localStorage.setItem(chave, valor);
             }
 
@@ -184,11 +187,11 @@
             carregarTaxasSalvas();
 
             // 2. Adiciona "ouvintes" de evento para salvar as taxas automaticamente
-            // O evento 'input' é disparado sempre que o utilizador digita algo.
-            usdMedia.addEventListener('input', () => salvarTaxa(KEY_USD_MEDIA, usdMedia.value));
-            usdFim.addEventListener('input', () => salvarTaxa(KEY_USD_FIM, usdFim.value));
-            brlMedia.addEventListener('input', () => salvarTaxa(KEY_BRL_MEDIA, brlMedia.value));
-            brlFim.addEventListener('input', () => salvarTaxa(KEY_BRL_FIM, brlFim.value));
+            // MUDANÇA: Os "ouvintes" foram atualizados para os novos IDs e chaves
+            eurUsdMedia.addEventListener('input', () => salvarTaxa(KEY_EUR_USD_MEDIA, eurUsdMedia.value));
+            eurUsdFim.addEventListener('input', () => salvarTaxa(KEY_EUR_USD_FIM, eurUsdFim.value));
+            eurBrlMedia.addEventListener('input', () => salvarTaxa(KEY_EUR_BRL_MEDIA, eurBrlMedia.value));
+            eurBrlFim.addEventListener('input', () => salvarTaxa(KEY_EUR_BRL_FIM, eurBrlFim.value));
 
             // 3. Adiciona o "ouvinte" de evento ao botão
             btnConverter.addEventListener('click', realizarConversao);
@@ -201,16 +204,30 @@
                 erroContainer.classList.add('hidden');
 
                 // 1. Obter e estruturar as taxas de câmbio
-                // Usamos parseFloat para converter o texto do input em número decimal
+                
+                // MUDANÇA: Lemos as taxas (EUR -> MOEDA) inseridas pelo utilizador
+                const inputUsdMedia = parseFloat(eurUsdMedia.value);
+                const inputUsdFim = parseFloat(eurUsdFim.value);
+                const inputBrlMedia = parseFloat(eurBrlMedia.value);
+                const inputBrlFim = parseFloat(eurBrlFim.value);
+
+                // MUDANÇA: Validação para evitar divisão por zero
+                if (inputUsdMedia === 0 || inputUsdFim === 0 || inputBrlMedia === 0 || inputBrlFim === 0) {
+                    mostrarErro('As taxas de câmbio não podem ser zero.');
+                    return;
+                }
+
+                // MUDANÇA: Invertemos as taxas para o cálculo do pivô (MOEDA -> EUR)
+                // A lógica interna precisa de saber "quantos EUR vale 1 USD"
                 const taxas = {
                     'media': {
-                        'USD': parseFloat(usdMedia.value),
-                        'BRL': parseFloat(brlMedia.value),
-                        'EUR': 1 // 1 EUR sempre vale 1 EUR
+                        'USD': 1 / inputUsdMedia, // Taxa MOEDA -> EUR
+                        'BRL': 1 / inputBrlMedia, // Taxa MOEDA -> EUR
+                        'EUR': 1
                     },
                     'fim': {
-                        'USD': parseFloat(usdFim.value),
-                        'BRL': parseFloat(brlFim.value),
+                        'USD': 1 / inputUsdFim, // Taxa MOEDA -> EUR
+                        'BRL': 1 / inputBrlFim, // Taxa MOEDA -> EUR
                         'EUR': 1
                     }
                 };
@@ -230,12 +247,14 @@
                 const taxaOrigem = taxas[tipo][mOrigem];
                 const taxaDestino = taxas[tipo][mDestino];
 
+                // A validação isNaN agora verifica as taxas *depois* da inversão
                 if (isNaN(taxaOrigem) || isNaN(taxaDestino)) {
                     mostrarErro('Por favor, preencha todas as taxas de câmbio (Média e Fim) para USD e BRL.');
                     return;
                 }
 
                 // 4. Lógica de Conversão (Usando EUR como pivô)
+                // Esta lógica não muda, pois o objeto 'taxas' está correto (MOEDA -> EUR)
 
                 // Passo 1: Converter o Valor de Origem para EUR
                 // Ex: 100 USD * (Taxa USD->EUR) = Valor em EUR
@@ -255,9 +274,8 @@
             }
 
             function mostrarResultado(valor, moeda) {
-                // Formata o número para o padrão local (ex: 1.000.000,501234)
+                // Formata o número para o padrão local (ex: 1.000.000,50123)
                 // e adiciona o código da moeda.
-                // Alterado para 'decimal' para permitir mais de 2 casas decimais.
                 const formatoNumero = new Intl.NumberFormat('pt-BR', {
                     style: 'decimal', // Mudado de 'currency' para 'decimal'
                     minimumFractionDigits: 2, // Garante pelo menos 2 casas
@@ -273,5 +291,4 @@
     </script>
 </body>
 </html>
-
 
