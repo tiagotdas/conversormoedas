@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Moedas para Consolidação</title>
+    <!-- 1. Carregar o Tailwind CSS (para o estilo) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Um pequeno ajuste para os inputs numéricos não mostrarem as setas em alguns navegadores */
+        input[type='number']::-webkit-inner-spin-button,
+        input[type='number']::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type='number'] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+
+        <h1 class="text-3xl font-bold text-center text-blue-800 mb-6">Ferramenta de Conversão para Consolidação</h1>
+
+        <!-- SEÇÃO 1: CADASTRO DE TAXAS -->
+        <div class="mb-8 border-b pb-8">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Cadastrar Paridades do Mês (vs EUR)</h2>
+            <p class="text-sm text-gray-600 mb-4">Insira quantas unidades de EUR valem 1 unidade da moeda local.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Taxas USD -->
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                    <h3 class="font-bold text-lg mb-2">USD ➔ EUR</h3>
+                    <div>
+                        <label for="usd-media" class="block text-sm font-medium text-gray-700">Taxa Média (DRE/FCX)</label>
+                        <input type="number" id="usd-media" step="any" placeholder="Ex: 0.92" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="mt-4">
+                        <label for="usd-fim" class="block text-sm font-medium text-gray-700">Taxa Final (Balanço)</label>
+                        <input type="number" id="usd-fim" step="any" placeholder="Ex: 0.90" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Taxas BRL -->
+                <div class="bg-gray-50 p-4 rounded-lg border">
+                    <h3 class="font-bold text-lg mb-2">BRL ➔ EUR</h3>
+                    <div>
+                        <label for="brl-media" class="block text-sm font-medium text-gray-700">Taxa Média (DRE/FCX)</label>
+                        <input type="number" id="brl-media" step="any" placeholder="Ex: 0.19" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div class="mt-4">
+                        <label for="brl-fim" class="block text-sm font-medium text-gray-700">Taxa Final (Balanço)</label>
+                        <input type="number" id="brl-fim" step="any" placeholder="Ex: 0.18" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 2: CONVERSOR -->
+        <div>
+            <h2 class="text-2xl font-semibold text-gray-700 mb-4">2. Realizar Conversão</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                <!-- Coluna 1: Origem -->
+                <div>
+                    <label for="moeda-origem" class="block text-sm font-medium text-gray-700">Converter De:</label>
+                    <select id="moeda-origem" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="EUR">EUR (Euro)</option>
+                        <option value="USD" selected>USD (Dólar Americano)</option>
+                        <option value="BRL">BRL (Real Brasileiro)</option>
+                    </select>
+                </div>
+
+                <!-- Coluna 2: Destino -->
+                <div>
+                    <label for="moeda-destino" class="block text-sm font-medium text-gray-700">Converter Para:</label>
+                    <select id="moeda-destino" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="EUR">EUR (Euro)</option>
+                        <option value="USD">USD (Dólar Americano)</option>
+                        <option value="BRL" selected>BRL (Real Brasileiro)</option>
+                    </select>
+                </div>
+
+                <!-- Coluna 3: Valor -->
+                <div>
+                    <label for="valor-origem" class="block text-sm font-medium text-gray-700">Valor a Converter:</label>
+                    <input type="number" id="valor-origem" step="any" placeholder="Digite ou cole o valor" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <!-- Coluna 4: Tipo de Conversão -->
+                <div>
+                    <label for="tipo-cambio" class="block text-sm font-medium text-gray-700">Tipo de Conversão (Base):</label>
+                    <select id="tipo-cambio" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="media">DRE / Fluxo de Caixa (Taxa Média)</option>
+                        <option value="fim">Balanço Patrimonial (Taxa Final)</option>
+                    </select>
+                </div>
+
+                <!-- Coluna 5: Botão -->
+                <div>
+                    <label class="block text-sm font-medium text-transparent">.</label> <!-- Label fantasma para alinhar -->
+                    <button id="btn-converter" class="w-full bg-blue-600 text-white p-2.5 rounded-md shadow-sm font-semibold hover:bg-blue-700 transition-colors duration-200">
+                        Converter
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 3: RESULTADO -->
+        <div id="resultado-container" class="mt-8 p-6 bg-green-50 border border-green-200 rounded-lg text-center hidden">
+            <p class="text-sm text-green-700">Valor Convertido:</p>
+            <p id="resultado-texto" class="text-4xl font-bold text-green-900"></p>
+        </div>
+        
+        <!-- Mensagem de Erro -->
+        <div id="erro-container" class="mt-8 p-4 bg-red-50 border border-red-200 rounded-lg text-center text-red-700 font-medium hidden">
+            <p id="erro-texto"></p>
+        </div>
+
+    </div>
+
+    <script>
+        // 3. O JAVASCRIPT (Lógica da Aplicação)
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- INÍCIO: Chaves para o localStorage ---
+            // Definimos "chaves" (nomes) únicas para guardar cada taxa no localStorage
+            // É boa prática usar um prefixo para evitar conflitos com outros sites.
+            const KEY_USD_MEDIA = 'conversor_taxa_usd_media';
+            const KEY_USD_FIM = 'conversor_taxa_usd_fim';
+            const KEY_BRL_MEDIA = 'conversor_taxa_brl_media';
+            const KEY_BRL_FIM = 'conversor_taxa_brl_fim';
+
+            // Mapeamento dos elementos do HTML para o JavaScript
+            const btnConverter = document.getElementById('btn-converter');
+            
+            // Inputs de Taxas
+            const usdMedia = document.getElementById('usd-media');
+            const usdFim = document.getElementById('usd-fim');
+            const brlMedia = document.getElementById('brl-media');
+            const brlFim = document.getElementById('brl-fim');
+
+            // Inputs da Conversão
+            const moedaOrigem = document.getElementById('moeda-origem');
+            const moedaDestino = document.getElementById('moeda-destino');
+            const valorOrigem = document.getElementById('valor-origem');
+            const tipoCambio = document.getElementById('tipo-cambio');
+
+            // Exibição de Resultados
+            const resultadoContainer = document.getElementById('resultado-container');
+            const resultadoTexto = document.getElementById('resultado-texto');
+            const erroContainer = document.getElementById('erro-container');
+            const erroTexto = document.getElementById('erro-texto');
+
+            // --- INÍCIO: Funções de localStorage ---
+
+            // Função para carregar as taxas salvas do localStorage
+            function carregarTaxasSalvas() {
+                // localStorage.getItem(CHAVE) busca o valor. Se não existir, retorna null.
+                // Usamos '|| '' ' (ou string vazia) para garantir que o campo fique em branco se nada for encontrado.
+                usdMedia.value = localStorage.getItem(KEY_USD_MEDIA) || '';
+                usdFim.value = localStorage.getItem(KEY_USD_FIM) || '';
+                brlMedia.value = localStorage.getItem(KEY_BRL_MEDIA) || '';
+                brlFim.value = localStorage.getItem(KEY_BRL_FIM) || '';
+            }
+
+            // Função para salvar uma taxa específica
+            function salvarTaxa(chave, valor) {
+                // localStorage.setItem(CHAVE, VALOR) guarda o dado no navegador.
+                localStorage.setItem(chave, valor);
+            }
+
+            // --- FIM: Funções de localStorage ---
+
+
+            // --- INÍCIO: Carregamento Inicial e Event Listeners ---
+            
+            // 1. Carrega as taxas salvas assim que a página é aberta
+            carregarTaxasSalvas();
+
+            // 2. Adiciona "ouvintes" de evento para salvar as taxas automaticamente
+            // O evento 'input' é disparado sempre que o utilizador digita algo.
+            usdMedia.addEventListener('input', () => salvarTaxa(KEY_USD_MEDIA, usdMedia.value));
+            usdFim.addEventListener('input', () => salvarTaxa(KEY_USD_FIM, usdFim.value));
+            brlMedia.addEventListener('input', () => salvarTaxa(KEY_BRL_MEDIA, brlMedia.value));
+            brlFim.addEventListener('input', () => salvarTaxa(KEY_BRL_FIM, brlFim.value));
+
+            // 3. Adiciona o "ouvinte" de evento ao botão
+            btnConverter.addEventListener('click', realizarConversao);
+
+            // --- FIM: Carregamento Inicial e Event Listeners ---
+
+            function realizarConversao() {
+                // Esconde mensagens anteriores
+                resultadoContainer.classList.add('hidden');
+                erroContainer.classList.add('hidden');
+
+                // 1. Obter e estruturar as taxas de câmbio
+                // Usamos parseFloat para converter o texto do input em número decimal
+                const taxas = {
+                    'media': {
+                        'USD': parseFloat(usdMedia.value),
+                        'BRL': parseFloat(brlMedia.value),
+                        'EUR': 1 // 1 EUR sempre vale 1 EUR
+                    },
+                    'fim': {
+                        'USD': parseFloat(usdFim.value),
+                        'BRL': parseFloat(brlFim.value),
+                        'EUR': 1
+                    }
+                };
+
+                // 2. Obter os valores da conversão
+                const vlrOrigem = parseFloat(valorOrigem.value);
+                const mOrigem = moedaOrigem.value; // Ex: 'EUR'
+                const mDestino = moedaDestino.value; // Ex: 'BRL'
+                const tipo = tipoCambio.value; // Ex: 'media'
+
+                // 3. Validação (Verificar se os campos estão preenchidos)
+                if (isNaN(vlrOrigem) || vlrOrigem <= 0) {
+                    mostrarErro('Por favor, insira um valor válido para converter.');
+                    return;
+                }
+                
+                const taxaOrigem = taxas[tipo][mOrigem];
+                const taxaDestino = taxas[tipo][mDestino];
+
+                if (isNaN(taxaOrigem) || isNaN(taxaDestino)) {
+                    mostrarErro('Por favor, preencha todas as taxas de câmbio (Média e Fim) para USD e BRL.');
+                    return;
+                }
+
+                // 4. Lógica de Conversão (Usando EUR como pivô)
+
+                // Passo 1: Converter o Valor de Origem para EUR
+                // Ex: 100 USD * (Taxa USD->EUR) = Valor em EUR
+                const valorEmEUR = vlrOrigem * taxaOrigem;
+
+                // Passo 2: Converter o Valor em EUR para a Moeda de Destino
+                // Ex: (Valor em EUR) / (Taxa BRL->EUR) = Valor em BRL
+                const valorConvertido = valorEmEUR / taxaDestino;
+
+                // 5. Exibir o resultado
+                mostrarResultado(valorConvertido, mDestino);
+            }
+
+            function mostrarErro(mensagem) {
+                erroTexto.textContent = mensagem;
+                erroContainer.classList.remove('hidden');
+            }
+
+            function mostrarResultado(valor, moeda) {
+                // Formata o número para o padrão local (ex: 1.000.000,501234)
+                // e adiciona o código da moeda.
+                // Alterado para 'decimal' para permitir mais de 2 casas decimais.
+                const formatoNumero = new Intl.NumberFormat('pt-BR', {
+                    style: 'decimal', // Mudado de 'currency' para 'decimal'
+                    minimumFractionDigits: 2, // Garante pelo menos 2 casas
+                    maximumFractionDigits: 5 // Permite até 5 casas decimais
+                });
+
+                // Adicionamos a moeda manualmente, pois 'style: decimal' não a inclui.
+                // Ex: "BRL 1.234,56789"
+                resultadoTexto.textContent = `${moeda} ${formatoNumero.format(valor)}`;
+                resultadoContainer.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+
+
